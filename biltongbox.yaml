@@ -1,0 +1,87 @@
+esphome:
+  name: biltongbox
+  friendly_name: BiltongBox
+  build_path: build
+  
+esp8266:
+  board: d1_mini
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "DHpseBpK1lYwLErY7YDSWV722JWasBfej8f3wysYOOE="
+
+ota:
+  password: "836c4eaa0c1a4d102b121a73884505ca"
+
+wifi:
+  ssid: "viljoenwifi"
+  password: "neojl1vIfiw"
+  
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Biltongbox Fallback Hotspot"
+    password: "37vtxnuwzZwo"
+
+captive_portal:
+
+sensor:
+  - platform: dht
+    pin: D1
+    temperature:
+      name: "Inside Temp"
+    humidity:
+      name: "Inside Humidity"
+    update_interval: 30s
+
+  - platform: dht
+    pin: D2
+    temperature:
+      name: "Outside Temp"
+    humidity:
+      name: "Outside Humidity"
+    update_interval: 30s
+
+
+# switch:
+#   # Fan power (MOSFET)
+#   - platform: gpio
+#     pin: D2
+#     id: fan_power
+
+fan:
+  - platform: speed
+    id: the_fan
+    output: fan_pwm
+    name: Fan
+    speed_count: 100
+    # on_turn_on:
+    #   - switch.turn_on: fan_power
+    # on_turn_off:
+    #   - switch.turn_off: fan_power
+light:
+  - platform: monochromatic
+    output: dimmer1
+    name: Dimmerized Light
+
+output:  
+  - platform: esp8266_pwm
+    id: fan_pwm
+    pin: D8
+    # 25KHz is standard PC fan frequency, minimises buzzing                                                                                                                                                                            
+    frequency: "25000 Hz"
+    # my fans stop working below 13% powerful.                                                                                                                                                                                         
+    # also they're  powerful and loud, cap their max speed to 80%                                                                                                                                                                     
+    min_power: 1%
+    max_power: 100%
+  - platform: ac_dimmer
+    id: dimmer1
+    gate_pin: D6
+    zero_cross_pin:
+      number: D7
+      mode:
+        input: true
+      inverted: yes
