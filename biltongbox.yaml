@@ -1,3 +1,5 @@
+#<<: !include "/Users/dviljoen/.esphome/secrets.yaml"
+
 esphome:
   name: biltongbox
   friendly_name: BiltongBox
@@ -18,8 +20,8 @@ ota:
   password: "836c4eaa0c1a4d102b121a73884505ca"
 
 wifi:
-  ssid: "viljoenwifi"
-  password: "neojl1vIfiw"
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
   
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
@@ -46,11 +48,11 @@ sensor:
     update_interval: 30s
 
 
-# switch:
-#   # Fan power (MOSFET)
-#   - platform: gpio
-#     pin: D2
-#     id: fan_power
+switch:
+  # Fan power (MOSFET)
+  - platform: gpio
+    pin: D4
+    id: fan_power
 
 fan:
   - platform: speed
@@ -58,10 +60,10 @@ fan:
     output: fan_pwm
     name: Fan
     speed_count: 100
-    # on_turn_on:
-    #   - switch.turn_on: fan_power
-    # on_turn_off:
-    #   - switch.turn_off: fan_power
+    on_turn_on:
+      - switch.turn_on: fan_power
+    on_turn_off:
+      - switch.turn_off: fan_power
 light:
   - platform: monochromatic
     output: dimmer1
